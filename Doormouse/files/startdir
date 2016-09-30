@@ -1,0 +1,35 @@
+#!/bin/sh
+
+#usage
+useage(){
+    INPUT=$1
+    printf 'Useage : startdir [path]\n' >&2
+    printf "  $INPUT\n" >&2
+    exit 1
+}
+
+###############################################################################
+CalledFrom=`pwd`
+CalledAs=$0
+ScriptPath="$( cd "$( dirname "$0" )" && pwd )" 
+ScriptName=`basename "$0"`
+RECALL=$ScriptPath/$ScriptName #recursive call should be the same as first whatever path
+###############################################################################
+
+####### Read command line options
+if [ $# -lt 1 ]; then useage; fi
+if [ ! -d $1 ]; then useage 'Error: Path must be a directory that exists'; fi #make sure #SPATH is a directory
+
+SPATH=${1%/}/ #make sure #SPATH ends with /
+
+cd $SPATH
+
+FILES=`ls -1 | grep '^S[0-9][0-9]'`  
+
+for f in $FILES
+do
+    if [ -d $f ]; then $RECALL $f
+    else
+     if [ -x $f ]; then ./$f; fi
+    fi
+done
