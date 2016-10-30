@@ -19,8 +19,9 @@ base_system(){
  apt-get --force-yes -y install gawk
  apt-get --force-yes -y install ntpdate
  apt-get --force-yes -y install usbutils
- apt-get --force-yes -y install apache2
-  echo 'ExecStartPre=/bin/mkdir /var/log/apache2' >> /lib/systemd/system/apache2.service.d/forking.conf
+ #apt-get --force-yes -y install apache2
+ # echo 'ExecStartPre=/bin/mkdir /var/log/apache2' >> /lib/systemd/system/apache2.service.d/forking.conf
+ apt-get --force-yes -y install oracle-java8-jdk
  apt-get --force-yes -y install dnsmasq
  apt-get --force-yes -y install hostapd
  apt-get --force-yes -y install tcpdump
@@ -96,6 +97,8 @@ config(){
    sed -i 's/#DAEMON_CONF=""/DAEMON_CONF="\/etc\/hostapd\/hostapd.conf"/g' /etc/default/hostapd
   cp ./files/config/dnsmasq.conf /etc/dnsmasq.conf
   cp ./files/config/interfaces /etc/network/interfaces
+  cp ./files/config/rc.local /etc/
+   chmod 755 /etc/rc.local
 echo ...Done
 }
 
