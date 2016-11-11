@@ -120,7 +120,9 @@ read_only(){
  insserv -r console-setup
  cp ./files/config/fstab /etc/fstab
  cp ./files/ro /sbin/
+ chmod +x /sbin/ro
  cp ./files/rw /sbin/
+ chmod +x /sbin/rw
  swapoff /var/swap
  rm -f /var/swap
  systemctl daemon-reload
