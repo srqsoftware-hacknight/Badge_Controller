@@ -21,7 +21,6 @@ This is necessary for US keyboards to type '@' and '|' characters.
 Clone projects using git.
 ```
     cd
-    git clone https://github.com/srqsoftware-hacknight/Badge_Web.git
     git clone https://github.com/srqsoftware-hacknight/Badge_Controller.git
 ```
 
