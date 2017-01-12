@@ -7,7 +7,7 @@ Steps to install custom software over Jessie Raspbian 2016-05-27
 Update, and install git on raspberry
 ```
     sudo apt-get update
-    sudo apt-get install git
+    sudo apt-get -y install git
 ```
 
 Set local for US keyboard instead of UK. (requires reboot)
@@ -15,7 +15,7 @@ This is necessary for US keyboards to type '@' and '|' characters.
 ```
     sudo localectl set-x11-keymap us
     sudo localectl set-keymap us
-    reboot
+    sudo reboot
 ```
 
 Clone projects using git.
@@ -26,7 +26,7 @@ Clone projects using git.
 
 Install project (takes up to an hour)
 ```
-    sudo bash Badge_Controller/Doormouse/install.sh
+    sudo ./Badge_Controller/Doormouse/install.sh
 ```
 
 
