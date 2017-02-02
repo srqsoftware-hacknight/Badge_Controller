@@ -1,4 +1,4 @@
-RFID_Hardware files and source
+Badge controller and related components
 
 First install Jessie Raspbian 2016-05-27 to SD card, and boot into Raspberry Pi 3
 
@@ -26,18 +26,15 @@ Clone projects using git.
 
 Install project (takes up to an hour)
 ```
-    sudo ./Badge_Controller/Doormouse/install.sh
+    cd Badge_Controller/ControllerInstaller
+    sudo ./install.sh root_password pi_password mysql_password wifi_password wifi_ssid controller_hostname
 ```
 
+Replace the parameters to install.sh with your custom values.
 
-At this point the raspberry pi reboots, and is set up for stand alone doormouse operation.
+At this point the raspberry pi reboots, it is setup to act as a badge controller.
 
 The Raspberry Pi will normally run as a read-only filesystem to prevent wear on the sd card.
 You can easily set the filesystem to writable with the command ```sudo rw```
 When ready to lock it down again, use the command ```sudo ro```
-
-TODO
-Add instructions for setting up USB drive to hold MySQL and Jar application.
-The Badge_Controller is designed for MySQL database and Jar web application to run off a USB flash drive.
-This allows for easy upgrade of software and backup of the database.
 
