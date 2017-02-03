@@ -44,7 +44,7 @@ unsigned long CardTimeoutPeriod=5000;
 HTTPClient http;
 const char* host     = "172.31.0.1";
 const uint16_t port = 8080;
-const char* endpoint = "/rfid/check";
+const char* endpoint = "/device/check";
 #define SERVER_ACCEPT "accept" //what does the server return when card is valid
 
 // ################################ Main #######################################
