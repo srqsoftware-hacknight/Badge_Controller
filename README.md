@@ -1,8 +1,16 @@
 Badge controller and related components
 
-First install Jessie Raspbian 2016-05-27 to SD card, and boot into Raspberry Pi 3
+First install Jessie Raspbian 2016-05-27 to SD card.
 
-Steps to install custom software over Jessie Raspbian 2016-05-27
+Mount the SD card and cd into the root directory, then type:
+
+```
+touch ssh
+```
+
+Unmount the SD card then insert the SD card to the PI and boot it.
+
+SSH into the PI as the "pi" user with default password of "raspberry"
 
 Update, and install git on raspberry
 ```
@@ -18,9 +26,10 @@ This is necessary for US keyboards to type '@' and '|' characters.
     sudo reboot
 ```
 
+SSH back into the PI
+
 Clone projects using git.
 ```
-    cd
     git clone https://github.com/srqsoftware-hacknight/Badge_Controller.git
 ```
 
@@ -31,6 +40,8 @@ Install project (takes up to an hour)
 ```
 
 Replace the parameters to install.sh with your custom values.
+
+NOTE: wifi_password but be between 8 and 64 characters
 
 At this point the raspberry pi reboots, it is setup to act as a badge controller.
 
