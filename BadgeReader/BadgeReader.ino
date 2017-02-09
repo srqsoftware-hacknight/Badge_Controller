@@ -54,6 +54,8 @@ const char* host     = "172.31.0.1";
 const uint16_t port = 8080;
 const char* endpoint = "/rfid/check";
 #define SERVER_ACCEPT   "accept" //what does the server return when card is valid
+//const char* endpoint = "/device/check";
+#define SERVER_ACCEPT "accept" //what does the server return when card is valid
 
 // ################################ Main #######################################
 void setup() {

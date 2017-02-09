@@ -1,16 +1,14 @@
 #############################################################################
 #                                                                           #
-#  Welcome to The Doormouse, the Suncoast Science Center RFID entry system. #
+#  Welcome to Suncoast Science Center badge controller.                     #
 #                                                                           #
 #############################################################################
 
 This system is default read-only to prevent disk corruption:
  rw - switch the internal flash drive to read-write mode for maintenance
  ro - switch the internal flash drive back to read-only
+
 Please be sure to leave the system in a read-only state when logging out
 
 Syslog has been replaced with busybox's round robin log: See your log with "logread".
-
-Have fun chasing rabbits. Remember what the Doormouse said.
-
 
