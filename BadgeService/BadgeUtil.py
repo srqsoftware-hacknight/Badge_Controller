@@ -7,7 +7,7 @@ import os
 # Authorization Service (Badge_Web java web service)
 AUTH_HOST   = 'localhost'
 AUTH_PORT   = 8080
-AUTH_URL    = 'http://'+AUTH_HOST+':'+str(AUTH_PORT)+'/auth/check?%s'
+AUTH_URL    = 'http://'+AUTH_HOST+':'+str(AUTH_PORT)+'/device/check?%s'
 
 # Badge Service: to authorize for RFID; open door with GPIO
 BADGE_HOST  = 'localhost'
