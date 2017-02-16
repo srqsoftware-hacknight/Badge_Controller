@@ -41,7 +41,7 @@ Install project (takes up to an hour)
 
 Replace the parameters to install.sh with your custom values.
 
-NOTE: wifi_password but be between 8 and 64 characters
+NOTE: wifi_password must be between 8 and 64 characters
 
 At this point the raspberry pi reboots, it is setup to act as a badge controller.
 
