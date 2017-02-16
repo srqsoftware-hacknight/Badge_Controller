@@ -36,7 +36,7 @@ Clone projects using git.
 Install project (takes up to an hour)
 ```
     cd Badge_Controller/ControllerInstaller
-    sudo ./install.sh root_password pi_password mysql_password wifi_password wifi_ssid controller_hostname
+    sudo ./install.sh root_password pi_password mysql_password wifi_password wifi_ssid controller_hostname webapp_version_number 
 ```
 
 Replace the parameters to install.sh with your custom values.
