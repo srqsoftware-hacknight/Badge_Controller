@@ -45,7 +45,8 @@ NOTE: wifi_password but be between 8 and 64 characters
 
 At this point the raspberry pi reboots, it is setup to act as a badge controller.
 
-The Raspberry Pi will normally run as a read-only filesystem to prevent wear on the sd card.
-You can easily set the filesystem to writable with the command ```sudo rw```
-When ready to lock it down again, use the command ```sudo ro```
+When needing to shutdown the PI, SSH in and run:
 
+```
+shutdown -h now
+```
