@@ -16,7 +16,8 @@ class MyHandler(BaseHTTPRequestHandler):
             bid = bu.parseBadgeId(self.path)
             print "---------"
             print "do auth bid=",bid
-            auth = (bid[0] == '1')  # FIXME HACK
+            auth = (bid[0] == 'E')  # FIXME HACK
+            time.sleep(1)
             self.send_response(200)
             self.send_header('Content-type', 'text/plain')
             self.end_headers()

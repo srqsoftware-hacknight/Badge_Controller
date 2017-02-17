@@ -68,13 +68,18 @@ void setup() {
   LEDS.setBrightness(10); // turn down brightness for indoor testing.
   
   //Wifi
-  Serial.println("wifi start");
+  Serial.println("wifi disconnect");
+  // delete old config
+  WiFi.disconnect(true);  
+  delay(1000);
+  Serial.println("wifi begin");
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, wpakey);
 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print("x");
+  //while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.run() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("x");
   }
   
   nodename = get_nodename();
@@ -245,6 +250,8 @@ void updateLED() {
     strobeTime = millis();
   }
 }
+
+pwd
 
 
 // #############################################################################
