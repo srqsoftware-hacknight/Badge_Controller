@@ -6,8 +6,9 @@ import os
 
 # Authorization Service (Badge_Web java web service)
 AUTH_HOST   = 'localhost'
-AUTH_PORT   = 8080
+AUTH_PORT   = 80
 AUTH_URL    = 'http://'+AUTH_HOST+':'+str(AUTH_PORT)+'/device/check?%s'
+
 
 # Badge Service: to authorize for RFID; open door with GPIO
 #BADGE_HOST  = 'localhost'
@@ -23,15 +24,15 @@ class BadgeUtil:
             conn = httplib.HTTPConnection(AUTH_HOST, AUTH_PORT, timeout=5)
             #conn.set_debuglevel(5)
             #print "after conn"
-            params = urllib.urlencode({'id':bid})
+            params = urllib.urlencode({'device_id':0,'badge_id':bid})
             url = AUTH_URL % params
             print "after params, url=", url
             conn.request("GET",url)
             res = conn.getresponse()
             print "after getresponse"
             dat = res.read()
-            print "after read"
-            isAuth = (dat.count('ACCESS')>0)
+            print "after read:", dat
+            isAuth = (dat.count('accept')>0)
             return isAuth
         except Exception as e:
             print "error:",os.strerror(e.errno), " exception:",e

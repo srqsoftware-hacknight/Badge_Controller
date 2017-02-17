@@ -21,4 +21,6 @@ chmod 777 /tmp
 
 nohup java -jar /home/pi/badge-web.war --spring.config.location=file:/home/pi/application.properties > /home/pi/application.log 2>&1 &
 
+nohup python /home/pi/Badge_Controller/BadgeService/bsvc.py > /home/pi/bsvc.log 2>&1 &
+
 exit 0
