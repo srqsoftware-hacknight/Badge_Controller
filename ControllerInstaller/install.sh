@@ -67,6 +67,8 @@ base_system() {
   service mysql start
   update-rc.d mysql defaults
 
+  mysql -u root -p$MYSQLPASS -e 'create database badge;'
+
   log $DONE_MSG
 }
 
@@ -173,6 +175,7 @@ spring.datasource.url=jdbc:mysql://localhost/badge
 spring.datasource.username=root
 spring.datasource.password=$MYSQLPASS
 spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+spring.datasource.platform=mysql
 
 EOF
 
