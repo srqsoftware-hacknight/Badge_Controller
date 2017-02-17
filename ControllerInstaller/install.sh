@@ -2,12 +2,14 @@
 
 set -e
 
+HOME_DIR=/home/pi
 ROOTPASS=""
 PIPASSWORD=""
 MYSQLPASS=""
 WIFIPASS=""
 WIFISSID=""
 HOSTNAME=""
+WEBAPP_VER=""
 
 DONE_MSG="...Done"
 
@@ -39,10 +41,6 @@ read_only() {
   insserv -r bootlogs
   insserv -r console-setup
   cp ./files/config/fstab /etc/fstab
-  cp ./files/ro /sbin/
-  chmod +x /sbin/ro
-  cp ./files/rw /sbin/
-  chmod +x /sbin/rw
 
   systemctl daemon-reload
 
@@ -61,13 +59,13 @@ base_system() {
   apt-get --force-yes -y install hostapd
   apt-get --force-yes -y install tcpdump
 
-  cp ./files/startdir /sbin/
-  chmod 755 /sbin/startdir
-
   debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQLPASS"
   debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQLPASS"
 
   apt-get --force-yes -y install mysql-server
+
+  service mysql start
+  update-rc.d mysql defaults
 
   log $DONE_MSG
 }
@@ -148,7 +146,7 @@ set_watchdog() {
 }
 
 set_args() {
-  if [ "$#" -ne 6 ]; then
+  if [ "$#" -ne 7 ]; then
     display_help
     exit 1
   fi
@@ -159,11 +157,26 @@ set_args() {
   WIFIPASS="$4"
   WIFISSID="$5"
   HOSTNAME="$6"
+  WEBAPP_VER="$7"
 }
 
 display_help() {
   echo "Invalid number of parameters."
-  echo "./$(basename $0) root_password pi_password mysql_password wifi_password wifi_ssid controller_hostname"
+  echo "./$(basename $0) root_password pi_password mysql_password wifi_password wifi_ssid controller_hostname webapp_version_number"
+}
+
+setup_webapp() {
+  cat <<EOF > $HOME_DIR/application.properties
+server.port=80
+
+spring.datasource.url=jdbc:mysql://localhost/badge
+spring.datasource.username=root
+spring.datasource.password=$MYSQLPASS
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+
+EOF
+
+  curl --silent -L -o $HOME_DIR/badge-web.war https://github.com/srqsoftware-hacknight/Badge_Web/releases/download/$WEBAPP_VER/badge-web-$WEBAPP_VER.war
 }
 
 install() {
@@ -181,6 +194,7 @@ install() {
   set_wifi
   set_passwords
   set_watchdog
+  setup_webapp
 
   log ""
   log "Install Complete. Rebooting..."

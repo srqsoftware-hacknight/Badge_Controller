@@ -36,16 +36,17 @@ Clone projects using git.
 Install project (takes up to an hour)
 ```
     cd Badge_Controller/ControllerInstaller
-    sudo ./install.sh root_password pi_password mysql_password wifi_password wifi_ssid controller_hostname
+    sudo ./install.sh root_password pi_password mysql_password wifi_password wifi_ssid controller_hostname webapp_version_number 
 ```
 
 Replace the parameters to install.sh with your custom values.
 
-NOTE: wifi_password but be between 8 and 64 characters
+NOTE: wifi_password must be between 8 and 64 characters
 
 At this point the raspberry pi reboots, it is setup to act as a badge controller.
 
-The Raspberry Pi will normally run as a read-only filesystem to prevent wear on the sd card.
-You can easily set the filesystem to writable with the command ```sudo rw```
-When ready to lock it down again, use the command ```sudo ro```
+When needing to shutdown the PI, SSH in and run:
 
+```
+shutdown -h now
+```
