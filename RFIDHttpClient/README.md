@@ -62,12 +62,12 @@ NOTE:
    1. Tools -> Board -> "WeMos D1 R2 & Mini"
 
 2. setup wifi_credentials.h to define ssid and wpakey.
-This is *not* checked into the repository.  These must be defined for your wifi network.
+   This is *not* checked into the repository.  These must be defined for your wifi network.
 
-```
+    ```
     const char* ssid   = "your_wifi_ssid";
     const char* wpakey = "your_wifi_passwd";
-```
+    ```
 
 3. Compile and flash.
    Note: be sure to use a *communication* usb cable, not just a power charging cable.
