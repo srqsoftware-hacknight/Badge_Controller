@@ -26,7 +26,7 @@ extern "C" {
 #define USE_SERIAL Serial
 //#define USE_SERIAL ''
 
-#define AUTH_URL  "http://192.168.1.2:8081/device/check?id="
+#define AUTH_URL  "http://172.31.0.1:8081/device/check?id="
 
 // vars....
 ESP8266WiFiMulti WiFiMulti;
