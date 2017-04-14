@@ -22,6 +22,8 @@ extern "C" {
 //const char* ssid = "the_ssid";
 //const char* wpakey = "the_password";
 
+//For more logging to Serial output
+//#define DEBUG 
 
 #define USE_SERIAL Serial
 //#define USE_SERIAL ''
@@ -33,6 +35,7 @@ ESP8266WiFiMulti WiFiMulti;
 char cardBuff[60]; // buffer for RFID value (string of 4 hex bytes, plus spaces)
 
 
+// #############################################################################
 void setup() {
 
   // on startup, reconnect wifi.
@@ -41,7 +44,7 @@ void setup() {
   delay(100);
 
   USE_SERIAL.begin(115200);
-  while (!Serial);
+  while (!Serial) ;
   // USE_SERIAL.setDebugOutput(true);
   USE_SERIAL.println();
   //USE_SERIAL.print(F("system_get_chip_id(): 0x"));
@@ -54,7 +57,7 @@ void setup() {
   SetupLED();
 
   for (uint8_t t = 4; t > 0; t--) {
-    USE_SERIAL.printf("[SETUP] WAIT %d...\n", t);
+    USE_SERIAL.printf( "[SETUP] WAIT %d...\n", t);
     USE_SERIAL.flush();
     delay(1000);
   }
@@ -67,6 +70,9 @@ void setup() {
 
 }
 
+// #############################################################################
+// connect to access point on Raspi.
+// flash RED if cannot connect.
 void TryWifi() {
 
   while ((WiFiMulti.run() != WL_CONNECTED)) {
@@ -75,12 +81,15 @@ void TryWifi() {
     ShowLED(CRGB::Black);
     delay(500);
   }
+  // turn of LED, output IP address to Serial tty.
   ShowLED(CRGB::Black);
   Serial.println(F("WiFi connected"));
   Serial.println(F("IP address: "));
   Serial.println(WiFi.localIP());
 }
 
+
+// #############################################################################
 // try a card id with the Auth Server.
 // Handle result: LED indicator, buzzer.
 bool TryCard(String cid) {
@@ -124,7 +133,6 @@ bool TryCard(String cid) {
         USE_SERIAL.println("NOT OK");
       }
 
-
     } else {
       USE_SERIAL.printf( "[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
     }
@@ -136,6 +144,8 @@ bool TryCard(String cid) {
 }
 
 
+// #############################################################################
+// Main event loop
 void loop() {
 
   if ( CardAvailable() ) {
