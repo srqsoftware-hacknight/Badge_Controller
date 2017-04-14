@@ -51,6 +51,8 @@ class BadgeUtil:
         print "parseBadgeId:badge_id:", badge_id
         return badge_id
 
+# pulse level '0' to gpio #1 to press 'exit' button to unlock door.
     def openDoor(self):
-        print "TODO... open door"   # TODO
-
+        print "OPEN DOOR"
+        os.system('/usr/local/bin/gpio mode 1 output')
+        os.system('/usr/local/bin/gpio write 1 0; sleep 1; /usr/local/bin/gpio write 1 1')
