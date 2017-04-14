@@ -41,38 +41,6 @@ bool CardAvailable() {
 
 
 
-
-// #############################################################################
-// convert 0x0 - 0xF => '0'...'F'
-char ZZZ_Hex2Char(byte hex) {
-  hex &= 0x0f; // mask lower nibble
-  if (hex <= 0x09) {
-    return '0' + hex;
-  }
-  else if (hex <= 0x0F) {
-    return 'A' + hex - 0x0A;
-  }
-  return '*'; // error
-}
-
-
-// #############################################################################
-// Return a buffer of bytes as a String of hex values
-// NOTE: must pre-allocate str
-void ZZZ_Hex2Str(byte *buffer, byte bufferSize, char* str) {
-
-uint32_t ui = (buffer[3]<<24) + (buffer[2]<<16) + (buffer[1]<<8) + (buffer[0]);
-sprintf(str,"%010i",ui); // format zero-padded for 10 digits
-#ifdef DEBUG
-Serial.print ("UI=");
-Serial.println (ui, DEC);
-Serial.print ("str=");
-Serial.println (str);
-#endif
-}
-
-
-
 // #############################################################################
 // scan card from rfid reader into 'rfid' struct, must be already present
 bool ScanCard(char* cardbuf) {
