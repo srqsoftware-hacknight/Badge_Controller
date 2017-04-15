@@ -25,7 +25,8 @@ void ShowLED(CRGB color) {
 void SetupLED() {
   Serial.println("lights start");
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
-  LEDS.setBrightness(10); // turn down brightness for indoor testing.
+  //LEDS.setBrightness(10); // turn down brightness for indoor testing.
+  LEDS.setBrightness(30);
   ShowLED(CRGB::Yellow);
 
 }
