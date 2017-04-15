@@ -73,6 +73,8 @@ void setup() {
     delay(500);
     tone(PIEZO_PIN,PIEZO_TONE_GOOD,500);
     delay(500);
+    digitalWrite(PIEZO_PIN,LOW);
+    
 
   SetupRFID();
 
@@ -180,11 +182,13 @@ void loop() {
       yield();
       tone(PIEZO_PIN,PIEZO_TONE_GOOD,800);
       delay(1000);
+      digitalWrite(PIEZO_PIN,LOW);
     } else {
       ShowLED(CRGB::Red);
       yield();
       tone(PIEZO_PIN,PIEZO_TONE_BAD,800);
       delay(1000);
+      digitalWrite(PIEZO_PIN,LOW);
     }
     ShowLED(CRGB::Black);
     delay(1000);
