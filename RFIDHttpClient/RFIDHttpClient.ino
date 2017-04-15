@@ -25,6 +25,11 @@ extern "C" {
 //For more logging to Serial output
 //#define DEBUG 
 
+#define PIEZO_PIN  D2 // attach piezo element to D2 and GND to hear good/bad tones.
+#define PIEZO_TONE_GOOD  800
+#define PIEZO_TONE_BAD   200
+
+
 #define USE_SERIAL Serial
 //#define USE_SERIAL ''
 
@@ -61,6 +66,13 @@ void setup() {
     USE_SERIAL.flush();
     delay(1000);
   }
+
+    // set piezo tone output, play bad,good tones for speaker test.
+    pinMode(PIEZO_PIN, OUTPUT);
+    tone(PIEZO_PIN,PIEZO_TONE_BAD,500);
+    delay(500);
+    tone(PIEZO_PIN,PIEZO_TONE_GOOD,500);
+    delay(500);
 
   SetupRFID();
 
@@ -121,20 +133,24 @@ bool TryCard(String cid) {
         String payload = http.getString();
         USE_SERIAL.print("Payload=");
         USE_SERIAL.println(payload);
-
+        
         if (payload.startsWith("ACCEPT")) {
           accepted = true;
           USE_SERIAL.println("Card Accepted");
         } else if (payload.startsWith("DENY")) {
-          USE_SERIAL.println("Card Denied");
+          USE_SERIAL.println("Card Denied");          
         }
 
       } else {
+#ifdef DEBUG        
         USE_SERIAL.println("NOT OK");
+#endif        
       }
 
     } else {
+#ifdef DEBUG        
       USE_SERIAL.printf( "[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+#endif        
     }
 
     http.end();
@@ -162,13 +178,13 @@ void loop() {
     if ( TryCard(cardString) ) {
       ShowLED(CRGB::Green);
       yield();
-      //tone(200); // nice piezo
+      tone(PIEZO_PIN,PIEZO_TONE_GOOD,800);
       delay(1000);
     } else {
       ShowLED(CRGB::Red);
       yield();
+      tone(PIEZO_PIN,PIEZO_TONE_BAD,800);
       delay(1000);
-      //tone(80); // mean piezo
     }
     ShowLED(CRGB::Black);
     delay(1000);
