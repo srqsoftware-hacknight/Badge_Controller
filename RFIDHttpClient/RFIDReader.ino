@@ -6,9 +6,16 @@
 #include <SPI.h>
 #include <MFRC522.h>  // v 1.2.0
 
-// See wemos pinout diagram for SS, MOSI, MISO, SCK (wemos mini: D8, D13, D12, D14)
-#define SS_PIN D8 // D8/gpio15 for SS
-#define RST_PIN D4 // any pin, we use D4/gpio2
+// SS, MOSI, MISO, SCK (gpio15, gpio13, gpio12, gpio14)
+// wemos mini: SS=D8, MOSI=D7, MISO=D6, SCK=D5
+// There are specific pins for SCK, MISO, MOSI, SS.  Use any pin for RST
+#define SS_PIN D8
+#define RST_PIN D4 // we use D4/gpio2 (has external 10k pull-up resistor)
+
+// NOTE: gpio2(D4), gpio0(D3) have external 10k pull-up resistors (used in programming)
+// We can pull down with 'call' button and check for LOW condition.
+// This can be useful to implement a 'Guest Call' button on the reader box.
+
 
 // vars....
 MFRC522 rfid(SS_PIN, RST_PIN);
