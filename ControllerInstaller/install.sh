@@ -182,6 +182,13 @@ EOF
   curl --silent -L -o $HOME_DIR/badge-web.war https://github.com/srqsoftware-hacknight/Badge_Web/releases/download/$WEBAPP_VER/badge-web-$WEBAPP_VER.war
 }
 
+setup_wiringpi() {
+  git clone git://git.drogon.net/wiringPi
+  cd wiringPi
+  git checkout -b 2.44 2.44
+  ./build
+}
+
 install() {
   set_args "$@"
 
@@ -198,6 +205,7 @@ install() {
   set_passwords
   set_watchdog
   setup_webapp
+  setup_wiringpi
 
   log ""
   log "Install Complete. Rebooting..."
