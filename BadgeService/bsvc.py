@@ -16,17 +16,18 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'text/plain')
             self.end_headers()
-# TODO: if 'call' then Handle Call Button
-# else, Verify Badge
-            idval = bu.parseBadgeId(self.path)
-            print "---------"
-            print "idval:",idval
-            auth = bu.isBadgeAuthorized(idval)
-            if auth:
-                self.wfile.write('ACCEPT:'+idval)
-                bu.openDoor()
-            else:
-                self.wfile.write('DENY:'+idval)
+            if self.path.find("call") > 0:
+                bu.callButton()
+            if self.path.find("device/check") > 0:
+                idval = bu.parseBadgeId(self.path)
+                print "---------"
+                print "idval:",idval
+                auth = bu.isBadgeAuthorized(idval)
+                if auth:
+                    self.wfile.write('ACCEPT:'+idval)
+                    bu.openDoor()
+                else:
+                    self.wfile.write('DENY:'+idval)
         except IOError:
             self.send_error(404, 'File not found: %s' % self.path)
         except Exception as e:

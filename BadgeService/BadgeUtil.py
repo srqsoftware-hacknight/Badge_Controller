@@ -59,3 +59,10 @@ class BadgeUtil:
         print "OPEN DOOR"
         os.system('/usr/local/bin/gpio mode 1 output')
         os.system('/usr/local/bin/gpio write 1 0; sleep 1; /usr/local/bin/gpio write 1 1')
+
+# pulse level '0' to gpio #1 to press 'exit' button to unlock door.
+    def callButton(self):
+        print "CALL BUTTON PRESSED - send email or text"
+# TODO email or text Eric's phone
+
+
