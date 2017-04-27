@@ -16,6 +16,8 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'text/plain')
             self.end_headers()
+# TODO: if 'call' then Handle Call Button
+# else, Verify Badge
             idval = bu.parseBadgeId(self.path)
             print "---------"
             print "idval:",idval

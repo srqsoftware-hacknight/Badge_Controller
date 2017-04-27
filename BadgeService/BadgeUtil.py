@@ -10,11 +10,14 @@ AUTH_PORT   = 80
 AUTH_URL    = 'http://'+AUTH_HOST+':'+str(AUTH_PORT)+'/device/check?%s'
 
 
+
 # Badge Service: to authorize for RFID; open door with GPIO
 #BADGE_HOST  = 'localhost'
 BADGE_HOST  = ''
 BADGE_PORT  = 8081
 BADGE_URL   = 'http://'+BADGE_HOST+':'+str(BADGE_PORT)+'/badge/check?%s'
+CALL_URL    = 'http://'+BADGE_HOST+':'+str(BADGE_PORT)+'/call'
+
 
 class BadgeUtil:
 
