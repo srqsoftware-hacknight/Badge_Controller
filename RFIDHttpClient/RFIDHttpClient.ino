@@ -32,7 +32,8 @@ extern "C" {
 #include <ESP8266HTTPClient.h>
 #include "FastLED.h"
 
-#include "wifi_credentials.h" // .h contains ssid, wpakey
+#include "cred.h"
+//#include "wifi_credentials.h" // .h contains ssid, wpakey
 //const char* ssid = "the_ssid";
 //const char* wpakey = "the_password";
 
@@ -54,7 +55,6 @@ extern "C" {
 ESP8266WiFiMulti WiFiMulti;
 char cardBuff[60]; // buffer for RFID value (string of 4 hex bytes, plus spaces)
 
-
 // #############################################################################
 void setup() {
 
@@ -74,6 +74,8 @@ void setup() {
   sprintf(cardBuff, "MAC %06X.", ESP.getChipId());
   DBG_PRINTLN(cardBuff);
 
+  SetupButton();
+  
   SetupLED();
 
   for (uint8_t t = 4; t > 0; t--) {
@@ -108,7 +110,7 @@ void setup() {
 void TryWifi() {
 
   while ((WiFiMulti.run() != WL_CONNECTED)) {
-    ShowLED(CRGB::Red);
+    ShowLED(CRGB::Red); // flashing RED while trying to connect to wifi
     delay(500);
     ShowLED(CRGB::Black);
     delay(500);
@@ -118,6 +120,9 @@ void TryWifi() {
   Serial.println(F("WiFi connected"));
   Serial.println(F("IP address: "));
   Serial.println(WiFi.localIP());
+  ShowLED(CRGB::Green); // flash green after getting IP address.
+  delay(1000);
+  ShowLED(CRGB::Black);
 }
 
 

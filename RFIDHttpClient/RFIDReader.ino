@@ -16,11 +16,9 @@
 // We can pull down with 'call' button and check for LOW condition.
 // This can be useful to implement a 'Guest Call' button on the reader box.
 
-
 // vars....
 MFRC522 rfid(SS_PIN, RST_PIN);
 // Not using key yet...  MFRC522::MIFARE_Key key;
-
 
 
 void SetupRFID() {
@@ -30,14 +28,17 @@ void SetupRFID() {
 }
 
 
-
 // #############################################################################
 // return true if card available to scan
 bool CardAvailable() {
   if ( ! rfid.PICC_IsNewCardPresent()) {
+   //Serial.println("card not present");
     return false;
   }
+  Serial.println("card present");
+  
   if ( ! rfid.PICC_ReadCardSerial()) {
+    Serial.println("card not read");
     return false;
   }
   DBG_PRINTLN("card available");
