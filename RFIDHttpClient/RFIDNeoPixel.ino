@@ -6,8 +6,8 @@
 // Green = accepted ; Red = Denied
 
 
-#define NUM_LEDS 1
-#define DATA_PIN D1 // WS2812B led data output on D1/gpio5
+#define NUM_LEDS   1
+#define DATA_PIN   D1 // WS2812B led data output on D1/gpio5
 
 // vars....
 CRGB leds[NUM_LEDS];
