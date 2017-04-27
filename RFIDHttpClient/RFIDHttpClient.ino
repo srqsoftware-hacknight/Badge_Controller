@@ -47,8 +47,8 @@ extern "C" {
 #define PIEZO_TONE_BAD   200
 
 
-#define AUTH_URL  "http://172.31.0.1:8081/device/check?id="
-#define CALL_URL  "http://172.31.0.1:8081/device/call"
+#define BADGE_URL  "http://172.31.0.1:8081/device/check?id="
+#define CALL_URL  "http://172.31.0.1:8081/call"
 
 // vars....
 ESP8266WiFiMulti WiFiMulti;
@@ -196,7 +196,7 @@ bool TryCard(String cid) {
   bool accepted =  false;
 
   if ((WiFiMulti.run() == WL_CONNECTED)) {
-    String url = AUTH_URL + cid ;
+    String url = BADGE_URL + cid ;
     accepted =  sendURL(url);
   } else {
     DBG_PRINT( F("[HTTP] auth error") );
