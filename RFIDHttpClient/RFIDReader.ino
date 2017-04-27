@@ -9,8 +9,8 @@
 // SS, MOSI, MISO, SCK (gpio15, gpio13, gpio12, gpio14)
 // wemos mini: SS=D8, MOSI=D7, MISO=D6, SCK=D5
 // There are specific pins for SCK, MISO, MOSI, SS.  Use any pin for RST
-#define SS_PIN D8
-#define RST_PIN D4 // we use D4/gpio2 (has external 10k pull-up resistor)
+#define SS_PIN   D8
+#define RST_PIN  D4 // we use D4/gpio2 (has external 10k pull-up resistor)
 
 // NOTE: gpio2(D4), gpio0(D3) have external 10k pull-up resistors (used in programming)
 // We can pull down with 'call' button and check for LOW condition.
@@ -24,7 +24,7 @@ MFRC522 rfid(SS_PIN, RST_PIN);
 
 
 void SetupRFID() {
-  USE_SERIAL.println("spi start");
+  DBG_PRINTLN("spi start");
   SPI.begin();
   rfid.PCD_Init();
 }
@@ -40,9 +40,7 @@ bool CardAvailable() {
   if ( ! rfid.PICC_ReadCardSerial()) {
     return false;
   }
-#ifdef DEBUG
-  Serial.println("card available");
-#endif
+  DBG_PRINTLN("card available");
   return true;
 }
 

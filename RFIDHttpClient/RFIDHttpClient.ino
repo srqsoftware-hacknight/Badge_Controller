@@ -12,6 +12,20 @@ extern "C" {
 #endif
 
 
+// Set DEBUG to 1 for lots of lovely debug output
+#define DEBUG  0
+
+// Debug directives
+#if DEBUG
+#   define DBG_PRINT(...)    Serial.print(__VA_ARGS__)
+#   define DBG_PRINTLN(...)  Serial.println(__VA_ARGS__)
+#else
+#   define DBG_PRINT(...)
+#   define DBG_PRINTLN(...)
+#endif
+
+
+
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
@@ -23,17 +37,18 @@ extern "C" {
 //const char* wpakey = "the_password";
 
 //For more logging to Serial output
-//#define DEBUG 
+//#define DEBUG
 
+#define BTN_PIN    D3  // FIXME put real button pin here
 #define PIEZO_PIN  D2 // attach piezo element to D2 and GND to hear good/bad tones.
+
 #define PIEZO_TONE_GOOD  800
+#define PIEZO_TONE_CALL  600
 #define PIEZO_TONE_BAD   200
 
 
-#define USE_SERIAL Serial
-//#define USE_SERIAL ''
-
 #define AUTH_URL  "http://172.31.0.1:8081/device/check?id="
+#define CALL_URL  "http://172.31.0.1:8081/device/call"
 
 // vars....
 ESP8266WiFiMulti WiFiMulti;
@@ -48,33 +63,36 @@ void setup() {
   WiFi.disconnect();
   delay(100);
 
-  USE_SERIAL.begin(115200);
+  Serial.begin(115200);
   while (!Serial) ;
   // USE_SERIAL.setDebugOutput(true);
-  USE_SERIAL.println();
+  DBG_PRINTLN();
   //USE_SERIAL.print(F("system_get_chip_id(): 0x"));
   //USE_SERIAL.println(system_get_chip_id(), HEX);
 
   // just use cardBuff once to show MAC H/W address
   sprintf(cardBuff, "MAC %06X.", ESP.getChipId());
-  USE_SERIAL.println(cardBuff);
+  DBG_PRINTLN(cardBuff);
 
   SetupLED();
 
   for (uint8_t t = 4; t > 0; t--) {
-    USE_SERIAL.printf( "[SETUP] WAIT %d...\n", t);
-    USE_SERIAL.flush();
+    DBG_PRINT( "[SETUP] WAIT %d...\n", t);
+    Serial.flush();
     delay(1000);
   }
 
-    // set piezo tone output, play bad,good tones for speaker test.
-    pinMode(PIEZO_PIN, OUTPUT);
-    tone(PIEZO_PIN,PIEZO_TONE_BAD,500);
-    delay(500);
-    tone(PIEZO_PIN,PIEZO_TONE_GOOD,500);
-    delay(500);
-    digitalWrite(PIEZO_PIN,LOW);
-    
+  // set piezo tone output, play bad,good tones for speaker test.
+  pinMode(PIEZO_PIN, OUTPUT);
+  tone(PIEZO_PIN, PIEZO_TONE_BAD, 500);
+  delay(500);
+  tone(PIEZO_PIN, PIEZO_TONE_GOOD, 500);
+  delay(500);
+  digitalWrite(PIEZO_PIN, LOW);
+
+  // 'call' button for doorbell, use internal pull-up resistor (active low)
+  pinMode(BTN_PIN, INPUT_PULLUP);
+
 
   SetupRFID();
 
@@ -103,59 +121,85 @@ void TryWifi() {
 }
 
 
+bool sendURL(String url) {
+
+  HTTPClient http;
+  bool ret = false;
+
+  DBG_PRINTLN(F("[HTTP] begin..."));
+  // configure traged server and url
+  //http.begin("https://192.168.1.12/test.html", "7a 9c f4 db 40 d3 62 5a 6e 21 bc 5c cc 66 c8 3e a1 45 59 38"); //HTTPS
+
+  http.begin(url); //HTTP
+
+  //USE_SERIAL.print("[HTTP] GET...\n");
+  // start connection and send HTTP header
+  int httpCode = http.GET();
+
+  // httpCode will be negative on error
+  if (httpCode > 0) {
+    // HTTP header has been send and Server response header has been handled
+    DBG_PRINT("[HTTP] GET... code: %d\n", httpCode);
+
+    // file found at server
+    if (httpCode == HTTP_CODE_OK) {
+      String payload = http.getString();
+      DBG_PRINT(F("Payload="));
+      DBG_PRINTLN(payload);
+
+      if (payload.startsWith("ACCEPT")) {
+        ret = true;
+        DBG_PRINTLN(F("Card Accepted"));
+      } else if (payload.startsWith("DENY")) {
+        DBG_PRINTLN(F("Card Denied"));
+      }
+
+    } else {
+#ifdef DEBUG
+      DBG_PRINTLN("NOT OK");
+#endif
+    }
+  } else {
+#ifdef DEBUG
+    DBG_PRINT( "[HTTP] GET... failed, error: %s\n", HTTPClient::errorToString(httpCode).c_str());
+#endif
+  }
+  http.end();
+  return ret;
+}
+
+
+// #############################################################################
+// try read 'call' button, if presed then send to CALL_URL.
+//
+bool TryButton() {
+  bool ret = false;
+  // active low button, LOW when pressed.
+  if ( digitalRead(BTN_PIN) == HIGH) {
+    ret = false;
+  }
+
+  if ((WiFiMulti.run() == WL_CONNECTED)) {
+    String url = CALL_URL ;
+    ret =  sendURL(url);
+  } else {
+    DBG_PRINT( F("[HTTP] call error") );
+  }
+
+  return ret;
+}
+
 // #############################################################################
 // try a card id with the Auth Server.
 // Handle result: LED indicator, buzzer.
 bool TryCard(String cid) {
-  bool accepted = false;
+  bool accepted =  false;
 
-  // wait for WiFi connection
   if ((WiFiMulti.run() == WL_CONNECTED)) {
-
-    HTTPClient http;
-
-    USE_SERIAL.println(F("[HTTP] begin..."));
-    // configure traged server and url
-    //http.begin("https://192.168.1.12/test.html", "7a 9c f4 db 40 d3 62 5a 6e 21 bc 5c cc 66 c8 3e a1 45 59 38"); //HTTPS
-
-    String url = AUTH_URL + cid;
-    http.begin(url); //HTTP
-
-    //USE_SERIAL.print("[HTTP] GET...\n");
-    // start connection and send HTTP header
-    int httpCode = http.GET();
-
-    // httpCode will be negative on error
-    if (httpCode > 0) {
-      // HTTP header has been send and Server response header has been handled
-      USE_SERIAL.printf("[HTTP] GET... code: %d\n", httpCode);
-
-      // file found at server
-      if (httpCode == HTTP_CODE_OK) {
-        String payload = http.getString();
-        USE_SERIAL.print("Payload=");
-        USE_SERIAL.println(payload);
-        
-        if (payload.startsWith("ACCEPT")) {
-          accepted = true;
-          USE_SERIAL.println("Card Accepted");
-        } else if (payload.startsWith("DENY")) {
-          USE_SERIAL.println("Card Denied");          
-        }
-
-      } else {
-#ifdef DEBUG        
-        USE_SERIAL.println("NOT OK");
-#endif        
-      }
-
-    } else {
-#ifdef DEBUG        
-      USE_SERIAL.printf( "[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
-#endif        
-    }
-
-    http.end();
+    String url = AUTH_URL + cid ;
+    accepted =  sendURL(url);
+  } else {
+    DBG_PRINT( F("[HTTP] auth error") );
   }
 
   return accepted;
@@ -174,27 +218,39 @@ void loop() {
     ScanCard(cardBuff);
     yield();
     String cardString(cardBuff);
-    Serial.print("cardString=");
-    Serial.println(cardString);
+    DBG_PRINT(F("cardString="));
+    DBG_PRINTLN(cardString);
 
     if ( TryCard(cardString) ) {
       ShowLED(CRGB::Green);
       yield();
-      tone(PIEZO_PIN,PIEZO_TONE_GOOD,800);
+      tone(PIEZO_PIN, PIEZO_TONE_GOOD, 800);
       delay(1000);
-      digitalWrite(PIEZO_PIN,LOW);
+      digitalWrite(PIEZO_PIN, LOW);
     } else {
       ShowLED(CRGB::Red);
       yield();
-      tone(PIEZO_PIN,PIEZO_TONE_BAD,800);
+      tone(PIEZO_PIN, PIEZO_TONE_BAD, 800);
       delay(1000);
-      digitalWrite(PIEZO_PIN,LOW);
+      digitalWrite(PIEZO_PIN, LOW);
     }
     ShowLED(CRGB::Black);
-    delay(1000);
+    delay(500);
 
   } // if CardAvailable()
   yield();
+
+  if ( TryButton() ) {
+    ShowLED(CRGB::Green);
+    yield();
+    tone(PIEZO_PIN, PIEZO_TONE_CALL, 800);
+    delay(1000);
+    yield();
+    digitalWrite(PIEZO_PIN, LOW);
+    ShowLED(CRGB::Black);
+    delay(1000);
+  }
+
 
 }
 
