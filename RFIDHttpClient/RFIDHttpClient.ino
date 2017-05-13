@@ -32,24 +32,25 @@ extern "C" {
 #include <ESP8266HTTPClient.h>
 #include "FastLED.h"
 
-#include "cred.h"
-//#include "wifi_credentials.h" // .h contains ssid, wpakey
+//#include "cred.h"
+#include "sj_wifi_credentials.h" // .h contains ssid, wpakey
 //const char* ssid = "the_ssid";
 //const char* wpakey = "the_password";
 
 //For more logging to Serial output
 //#define DEBUG
 
-#define BTN_PIN    D3  // FIXME put real button pin here
 #define PIEZO_PIN  D2 // attach piezo element to D2 and GND to hear good/bad tones.
 
 #define PIEZO_TONE_GOOD  800
-#define PIEZO_TONE_CALL  600
+#define PIEZO_TONE_CALL  400
 #define PIEZO_TONE_BAD   200
 
 
 #define BADGE_URL  "http://172.31.0.1:8081/device/check?id="
 #define CALL_URL  "http://172.31.0.1:8081/call"
+//SAJ #define BADGE_URL  "http://192.168.1.2:8081/device/check?id="
+//SAJ #define CALL_URL  "http://192.168.1.2:8081/call"
 
 // vars....
 ESP8266WiFiMulti WiFiMulti;
@@ -59,9 +60,10 @@ char cardBuff[60]; // buffer for RFID value (string of 4 hex bytes, plus spaces)
 void setup() {
 
   // on startup, reconnect wifi.
+  delay(500);
   WiFi.mode(WIFI_STA);
   WiFi.disconnect();
-  delay(100);
+  delay(500);
 
   Serial.begin(115200);
   while (!Serial) ;
@@ -74,8 +76,9 @@ void setup() {
   sprintf(cardBuff, "MAC %06X.", ESP.getChipId());
   DBG_PRINTLN(cardBuff);
 
+  // 'call' button for doorbell, use internal pull-up resistor (active low)
   SetupButton();
-  
+
   SetupLED();
 
   for (uint8_t t = 4; t > 0; t--) {
@@ -91,9 +94,6 @@ void setup() {
   tone(PIEZO_PIN, PIEZO_TONE_GOOD, 500);
   delay(500);
   digitalWrite(PIEZO_PIN, LOW);
-
-  // 'call' button for doorbell, use internal pull-up resistor (active low)
-  pinMode(BTN_PIN, INPUT_PULLUP);
 
 
   SetupRFID();
@@ -130,6 +130,12 @@ bool sendURL(String url) {
 
   HTTPClient http;
   bool ret = false;
+
+  if ((WiFiMulti.run() != WL_CONNECTED)) {
+    DBG_PRINT( F("[sendURL] no connection") );
+    return false;
+  }
+
 
   DBG_PRINTLN(F("[HTTP] begin..."));
   // configure traged server and url
@@ -174,25 +180,6 @@ bool sendURL(String url) {
 }
 
 
-// #############################################################################
-// try read 'call' button, if presed then send to CALL_URL.
-//
-bool TryButton() {
-  bool ret = false;
-  // active low button, LOW when pressed.
-  if ( digitalRead(BTN_PIN) == HIGH) {
-    ret = false;
-  }
-
-  if ((WiFiMulti.run() == WL_CONNECTED)) {
-    String url = CALL_URL ;
-    ret =  sendURL(url);
-  } else {
-    DBG_PRINT( F("[HTTP] call error") );
-  }
-
-  return ret;
-}
 
 // #############################################################################
 // try a card id with the Auth Server.
@@ -245,15 +232,18 @@ void loop() {
   } // if CardAvailable()
   yield();
 
+
   if ( TryButton() ) {
-    ShowLED(CRGB::Green);
+    //ShowLED(CRGB::Green);
+    ShowLED(CRGB::Purple);
     yield();
     tone(PIEZO_PIN, PIEZO_TONE_CALL, 800);
+    SendButton();
     delay(1000);
     yield();
     digitalWrite(PIEZO_PIN, LOW);
     ShowLED(CRGB::Black);
-    delay(1000);
+    //delay(1000);
   }
 
 

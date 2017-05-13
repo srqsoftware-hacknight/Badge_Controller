@@ -5,13 +5,16 @@ import httplib, urllib, urlparse
 import os
 
 # Authorization Service (Badge_Web java web service)
+# Badge Service (bsvc) calls Auth Service.
 AUTH_HOST   = 'localhost'
 AUTH_PORT   = 80
+#AUTH_PORT   = 8080
 AUTH_URL    = 'http://'+AUTH_HOST+':'+str(AUTH_PORT)+'/device/check?%s'
 
 
 
 # Badge Service: to authorize for RFID; open door with GPIO
+# RFID Reader calls this service
 #BADGE_HOST  = 'localhost'
 BADGE_HOST  = ''
 BADGE_PORT  = 8081
@@ -47,6 +50,7 @@ class BadgeUtil:
         qs = urlparse.parse_qs(prs[4])
         print "qs=",qs
         ids = qs.get('id','*')
+        print "ids=",ids
         if len(ids) > 0:
             badge_id = ids[0]
         else:
