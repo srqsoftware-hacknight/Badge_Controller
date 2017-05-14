@@ -15,8 +15,9 @@ class MyHandler(BaseHTTPRequestHandler):
         try:
             bid = bu.parseBadgeId(self.path)
             print "---------"
-            print "do auth bid=",bid
-            auth = (bid[0] == 'E')  # FIXME HACK
+            print "auth_sim GET: bid=",bid
+            #auth = (bid[0] == 'E')  # FIXME HACK
+            auth = (bid == '1247425401')  # FIXME hack: 1247425401 (blue fob)
             time.sleep(1)
             self.send_response(200)
             self.send_header('Content-type', 'text/plain')
@@ -28,7 +29,7 @@ class MyHandler(BaseHTTPRequestHandler):
         except IOError:
             self.send_error(404, 'error on badge: %s' % self.path)
         except Exception as e:
-            self.send_error(400, 'auth problem: %s' % e)
+            self.send_error(400, 'sim auth problem: %s' % e)
 
 def main():
     try:
