@@ -24,14 +24,14 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 print "idval:",idval
                 auth = bu.isBadgeAuthorized(idval)
                 if auth:
-                    self.wfile.write('ACCEPT:'+idval)
+                    self.wfile.write('ACCESS:'+idval)
                     bu.openDoor()
                 else:
                     self.wfile.write('DENY:'+idval)
         except IOError:
             self.send_error(404, 'File not found: %s' % self.path)
         except Exception as e:
-            self.send_error(400, 'auth problem: %s' % e)
+            self.send_error(400, 'bcsv auth problem: %s' % e)
 
 class ThreadedHTTPServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
     ''' handle requests in separate threads '''
