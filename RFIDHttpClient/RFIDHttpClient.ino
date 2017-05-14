@@ -49,8 +49,8 @@ extern "C" {
 
 #define BADGE_URL  "http://172.31.0.1:8081/device/check?id="
 #define CALL_URL  "http://172.31.0.1:8081/call"
-//SAJ #define BADGE_URL  "http://192.168.1.2:8081/device/check?id="
-//SAJ #define CALL_URL  "http://192.168.1.2:8081/call"
+//#define BADGE_URL  "http://192.168.1.2:8081/device/check?badge_id="
+//#define CALL_URL  "http://192.168.1.2:8081/call"
 
 // vars....
 ESP8266WiFiMulti WiFiMulti;
@@ -82,7 +82,8 @@ void setup() {
   SetupLED();
 
   for (uint8_t t = 4; t > 0; t--) {
-    DBG_PRINT( "[SETUP] WAIT %d...\n", t);
+    DBG_PRINT( "[SETUP] WAIT %d..." );
+    DBG_PRINTLN( t);
     Serial.flush();
     delay(1000);
   }
@@ -90,6 +91,8 @@ void setup() {
   // set piezo tone output, play bad,good tones for speaker test.
   pinMode(PIEZO_PIN, OUTPUT);
   tone(PIEZO_PIN, PIEZO_TONE_BAD, 500);
+  delay(500);
+  tone(PIEZO_PIN, PIEZO_TONE_CALL, 500);
   delay(500);
   tone(PIEZO_PIN, PIEZO_TONE_GOOD, 500);
   delay(500);
@@ -121,7 +124,15 @@ void TryWifi() {
   Serial.println(F("IP address: "));
   Serial.println(WiFi.localIP());
   ShowLED(CRGB::Green); // flash green after getting IP address.
-  delay(1000);
+  // play 'good' 3 times on success wifi connect.
+  tone(PIEZO_PIN, PIEZO_TONE_GOOD, 100);
+  delay(200);
+  tone(PIEZO_PIN, PIEZO_TONE_GOOD, 100);
+  delay(200);
+  tone(PIEZO_PIN, PIEZO_TONE_GOOD, 100);
+  delay(200);
+  // delay a little longer after 'good' tones, then go black.
+  delay(500);
   ShowLED(CRGB::Black);
 }
 
@@ -150,7 +161,8 @@ bool sendURL(String url) {
   // httpCode will be negative on error
   if (httpCode > 0) {
     // HTTP header has been send and Server response header has been handled
-    DBG_PRINT("[HTTP] GET... code: %d\n", httpCode);
+    DBG_PRINT("[HTTP] GET... code: ");
+    DBG_PRINTLN(httpCode);
 
     // file found at server
     if (httpCode == HTTP_CODE_OK) {
@@ -163,6 +175,8 @@ bool sendURL(String url) {
         DBG_PRINTLN(F("Card Accepted"));
       } else if (payload.startsWith("DENY")) {
         DBG_PRINTLN(F("Card Denied"));
+      } else {
+        DBG_PRINTLN(F("no card status"));
       }
 
     } else {
@@ -172,7 +186,8 @@ bool sendURL(String url) {
     }
   } else {
 #ifdef DEBUG
-    DBG_PRINT( "[HTTP] GET... failed, error: %s\n", HTTPClient::errorToString(httpCode).c_str());
+    DBG_PRINT( "[HTTP] GET... failed, error: ");
+    DBG_PRINTLN( HTTPClient::errorToString(httpCode).c_str());
 #endif
   }
   http.end();

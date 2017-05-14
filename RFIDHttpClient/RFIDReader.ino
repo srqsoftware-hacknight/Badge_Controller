@@ -1,7 +1,7 @@
 /**
- * RFID reader is Mifare Reader RC522
- * returns 4 byte unique id
- */
+   RFID reader is Mifare Reader RC522
+   returns 4 byte unique id
+*/
 
 #include <SPI.h>
 #include <MFRC522.h>  // v 1.2.0
@@ -32,11 +32,11 @@ void SetupRFID() {
 // return true if card available to scan
 bool CardAvailable() {
   if ( ! rfid.PICC_IsNewCardPresent()) {
-   //Serial.println("card not present");
+    //Serial.println("card not present");
     return false;
   }
   Serial.println("card present");
-  
+
   if ( ! rfid.PICC_ReadCardSerial()) {
     Serial.println("card not read");
     return false;
@@ -51,16 +51,16 @@ bool CardAvailable() {
 // scan card from rfid reader into 'rfid' struct, must be already present
 bool ScanCard(char* cardbuf) {
   // convert 4-byte binary into unsigned int.
-  uint32_t ui = (rfid.uid.uidByte[3]<<24) + (rfid.uid.uidByte[2]<<16) + (rfid.uid.uidByte[1]<<8) + (rfid.uid.uidByte[0]);
-  sprintf(cardbuf,"%010i",ui); // format zero-padded for 10 digits
+  uint32_t ui = (rfid.uid.uidByte[3] << 24) + (rfid.uid.uidByte[2] << 16) + (rfid.uid.uidByte[1] << 8) + (rfid.uid.uidByte[0]);
+  sprintf(cardbuf, "%010i", ui); // format zero-padded for 10 digits
 
   // reset RFID, to fix glitch/hang.
   rfid.PICC_HaltA();
   rfid.PCD_StopCrypto1();
   // mfr522 cards should be 4 bytes
   if (rfid.uid.size != 4)  {
-      Serial.println("ERROR: uid!=4");
-      return false;
+    Serial.println("ERROR: uid!=4");
+    return false;
   }
   return true;
 }
