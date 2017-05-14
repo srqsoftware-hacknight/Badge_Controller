@@ -1,8 +1,17 @@
 
 # BadgeUtil - handy class utils for parsing ID from URL, and doing GPIO on Raspberry PI
 
-import httplib, urllib, urlparse
+import httplib
 import os
+
+
+import urllib
+#try:
+#        from urllib.parse import urlparse
+#except ImportError:
+#        from urlparse import urlparse
+#        from urlparse
+import urlparse
 
 # Authorization Service (Badge_Web java web service)
 # Badge Service (bsvc) calls Auth Service.
@@ -38,24 +47,38 @@ class BadgeUtil:
             print "after getresponse"
             dat = res.read()
             print "after read:", dat
-            isAuth = (dat.count('accept')>0)
+            isAuth = (dat.count('ACCESS')>0)
             return isAuth
         except Exception as e:
             print "error:",os.strerror(e.errno), " exception:",e
             raise Exception('isBadgeAuthorized: auth_problem: %s' % url)
 
     def parseBadgeId(self,path):
-        prs = urlparse.urlparse(path)
-        print "prs=",prs
-        qs = urlparse.parse_qs(prs[4])
-        print "qs=",qs
-        ids = qs.get('id','*')
-        print "ids=",ids
-        if len(ids) > 0:
-            badge_id = ids[0]
-        else:
-            badge_id = '*'
-        print "parseBadgeId:badge_id:", badge_id
+        parsed = urlparse.urlparse(path)
+        print "parsed=",parsed
+        thequery = urlparse.urlparse(path).query
+        thepath = urlparse.urlparse(path).path
+        print "thequery=",thequery
+        print "thepath=",thepath
+        query_dict = urlparse.parse_qs(thequery.encode('ASCII'))
+        print "query_dict=",query_dict
+        badge_id = query_dict['badge_id'][0]
+
+        #qs = thequery
+        #device_id = item.find('device_id').text
+        #parsed = urlparse(path)
+        #print "parsed=",parsed
+        #qs = urllib.parse.parse_qs(parsed.query)
+        #qs = urlparse.parse_qs(parsed.query)
+
+        #print "qs=",qs
+        #ids = qs.get('id','*')
+        #print "ids=",ids
+        #if len(ids) > 0:
+        #    badge_id = ids[0]
+        #else:
+        #    badge_id = '*'
+        print "parseBadgeId: badge_id=", badge_id
         return badge_id
 
 # pulse level '0' to gpio #1 to press 'exit' button to unlock door.
