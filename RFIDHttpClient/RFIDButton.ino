@@ -5,7 +5,8 @@
 
 #define BTN_PIN    D3  // button pin here, tie putton to this pin and GND. Add 10 or 100nF to help debounce.
 
-#define BTN_COUNT    10 // count required for debounce, (hold button for about 1/2 second to ring)
+//#define BTN_COUNT    10 // count required for debounce, (hold button for about 1/2 second to ring)
+#define BTN_COUNT    5 // count required for debounce, (hold button for a little while to ring)
 
 #define BTN_LOCKOUT  800 // count required until btn is serviced again (lockout after call)
 // lockout will help prevent repeating alarms if button held down or pressed repeatedly.
