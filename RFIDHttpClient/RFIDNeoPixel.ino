@@ -1,7 +1,7 @@
 
 
 // Reader Indicator uses one WS2812 (NeoPixel)
-
+//
 // Yellow when starting up, flash red when no WiFi
 // Green = accepted ; Red = Denied
 

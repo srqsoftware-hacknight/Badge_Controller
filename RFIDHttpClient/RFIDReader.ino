@@ -1,6 +1,7 @@
 /**
    RFID reader is Mifare Reader RC522
    returns 4 byte unique id
+   use SPI to read card.
 */
 
 #include <SPI.h>
@@ -15,6 +16,9 @@
 // NOTE: gpio2(D4), gpio0(D3) have external 10k pull-up resistors (used in programming)
 // We can pull down with 'call' button and check for LOW condition.
 // This can be useful to implement a 'Guest Call' button on the reader box.
+//
+// these are not good pins to use for serial bus I/O, since they have the pullup resistor.
+// but they are fine for general signalling, or taking advantage of the pullup (like SPI reset line)
 
 // vars....
 MFRC522 rfid(SS_PIN, RST_PIN);

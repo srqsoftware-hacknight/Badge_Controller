@@ -1,9 +1,19 @@
 
 /**
-   RFID reader with http client and color LED indicator
-   read RFID if available, GET response from Badge Server
-   set LED/buzzer if access/denied
-*/
+ * Using Wemos D1 Mini.
+ * 
+ * RFID reader with http client and color LED indicator.
+ * Read RFID if available, GET response from Badge Server on Pi. 
+ * Set LED/buzzer if access is granted/denied.
+ * Service CALL button by hitting some http endpoint. lockout button for 20 secs or so.
+ *
+ * NOTE: gpio2(D4), gpio0(D3) have external 10k pull-up resistors (used in programming)
+ * We can pull down with 'call' button and check for LOW condition.
+ * This can be useful to implement a 'Guest Call' button on the reader box.
+ *
+ * these are not good pins to use for serial bus I/O, since they have the pullup resistor.
+ * but they are fine for general signalling, or taking advantage of the pullup (like SPI reset line)
+ */
 
 #ifdef ESP8266
 extern "C" {
@@ -32,8 +42,7 @@ extern "C" {
 #include <ESP8266HTTPClient.h>
 #include "FastLED.h"
 
-//#include "cred.h"
-#include "sj_wifi_credentials.h" // .h contains ssid, wpakey
+#include "private_credentials.h"
 //const char* ssid = "the_ssid";
 //const char* wpakey = "the_password";
 
