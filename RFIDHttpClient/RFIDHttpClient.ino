@@ -47,7 +47,7 @@ extern "C" {
 #define PIEZO_TONE_BAD   200
 
 
-#define BADGE_URL  "http://172.31.0.1:8081/device/check?id="
+#define BADGE_URL  "http://172.31.0.1:8081/device/check?badge_id="
 #define CALL_URL  "http://172.31.0.1:8081/call"
 //#define BADGE_URL  "http://192.168.1.2:8081/device/check?badge_id="
 //#define CALL_URL  "http://192.168.1.2:8081/call"
