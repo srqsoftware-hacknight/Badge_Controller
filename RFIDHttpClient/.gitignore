@@ -1,0 +1,4 @@
+
+# ignore private files with network credentials
+private_*.h
+
