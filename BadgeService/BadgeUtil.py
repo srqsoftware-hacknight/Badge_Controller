@@ -16,8 +16,8 @@ import urlparse
 # Authorization Service (Badge_Web java web service)
 # Badge Service (bsvc) calls Auth Service.
 AUTH_HOST   = 'localhost'
-AUTH_PORT   = 80
-#AUTH_PORT   = 8080
+#AUTH_PORT   = 80
+AUTH_PORT   = 8080
 AUTH_URL    = 'http://'+AUTH_HOST+':'+str(AUTH_PORT)+'/device/check?%s'
 
 
@@ -90,6 +90,6 @@ class BadgeUtil:
 # pulse level '0' to gpio #1 to press 'exit' button to unlock door.
     def callButton(self):
         print "CALL BUTTON PRESSED - send email or text"
-# TODO email or text Eric's phone
+        # TODO email or text Eric's phone
 
 
