@@ -23,7 +23,7 @@ extern "C" {
 
 
 // Set DEBUG to 1 for lots of lovely debug output
-#define DEBUG  0
+#define DEBUG  1
 
 // Debug directives
 #if DEBUG
@@ -179,7 +179,7 @@ bool sendURL(String url) {
       DBG_PRINT(F("Payload="));
       DBG_PRINTLN(payload);
 
-      if (payload.startsWith("ACCEPT")) {
+      if (payload.startsWith("ACCESS")) {
         ret = true;
         DBG_PRINTLN(F("Card Accepted"));
       } else if (payload.startsWith("DENY")) {
