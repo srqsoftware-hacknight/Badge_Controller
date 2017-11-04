@@ -16,8 +16,8 @@ import urlparse
 # Authorization Service (Badge_Web java web service)
 # Badge Service (bsvc) calls Auth Service.
 AUTH_HOST   = 'localhost'
-#AUTH_PORT   = 80
-AUTH_PORT   = 8080
+AUTH_PORT   = 80
+#AUTH_PORT   = 8080
 AUTH_URL    = 'http://'+AUTH_HOST+':'+str(AUTH_PORT)+'/device/check?%s'
 
 
@@ -47,7 +47,7 @@ class BadgeUtil:
             print "after getresponse"
             dat = res.read()
             print "after read:", dat
-            isAuth = (dat.count('ACCESS')>0)
+            isAuth = (dat.count('accept')>0)
             return isAuth
         except Exception as e:
             print "error:",os.strerror(e.errno), " exception:",e
